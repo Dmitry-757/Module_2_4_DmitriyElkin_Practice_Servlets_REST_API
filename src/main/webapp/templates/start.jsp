@@ -2,10 +2,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>JSP - Hello World</title>
+    <title>Start page of StartServlet</title>
 </head>
 <body>
-<h1><%= "Home task. Servlets + REST API" %>
+<h1><%= "Start page of StartServlet for task: Servlets + REST API" %>
 </h1>
 <br/>
 <%--<a href="main">Main</a>--%>
