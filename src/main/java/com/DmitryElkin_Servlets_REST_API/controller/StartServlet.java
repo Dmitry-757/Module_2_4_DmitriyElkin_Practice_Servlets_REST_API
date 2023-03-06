@@ -6,8 +6,16 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
+import java.util.Enumeration;
 
-@WebServlet(name = "StartServlet", value = "/StartServlet")
+@WebServlet(
+        name = "StartServlet",
+        value = "/StartServlet",
+        initParams = {
+                @WebInitParam(name = "version", value = "1.001"),
+                @WebInitParam(name = "some_param", value = "p_001")
+        }
+)
 public class StartServlet extends HttpServlet {
     @Override
     public void init() {
@@ -16,6 +24,13 @@ public class StartServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ServletConfig config = this.getServletConfig();
+        Enumeration e = config.getInitParameterNames();
+        while (e.hasMoreElements()){
+            String name = (String) e.nextElement();
+            String value = (String) config.getInitParameter(name);
+        }
+
         RequestDispatcher view = request.getRequestDispatcher("/templates/start.jsp");
         // don't add your web-app name to the path
         view.forward(request, response);
