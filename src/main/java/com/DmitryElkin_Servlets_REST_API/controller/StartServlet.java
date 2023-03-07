@@ -1,6 +1,5 @@
 package com.DmitryElkin_Servlets_REST_API.controller;
 
-import com.DmitryElkin_Servlets_REST_API.repository.utils.HibernateUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
