@@ -7,8 +7,12 @@
 <body>
 <h1><%= "Home task. Servlets + REST API" %>
 </h1>
+
 <br/>
-<%--<a href="main">Main</a>--%>
+<a href="${pageContext.request.contextPath}/StartServlet">StartServlet</a>
+<br>
+<br>
+<a href="${pageContext.request.contextPath}/RESTServlet">RESTServlet</a>
 
 
 
