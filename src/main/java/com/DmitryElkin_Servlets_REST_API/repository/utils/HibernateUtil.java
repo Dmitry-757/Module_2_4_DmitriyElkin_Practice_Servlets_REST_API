@@ -28,7 +28,7 @@ public class HibernateUtil {
 //            properties.setProperty("hibernate.connection.driver_class", "org.postgresql.Driver");
 //            properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
             properties.setProperty("hibernate.show_sql", "true");
-            properties.setProperty("hibernate.hbm2ddl.auto", "create");
+//            properties.setProperty("hibernate.hbm2ddl.auto", "create");
 //            properties.setProperty("hibernate.hbm2ddl.auto", "none");
 
             sessionFactory = new Configuration()

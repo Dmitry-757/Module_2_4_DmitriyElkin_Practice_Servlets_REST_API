@@ -1,13 +1,11 @@
 package com.DmitryElkin_Servlets_REST_API.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
 @Entity
+@Table(name = "file_tbl")
 public class File {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +16,7 @@ public class File {
     public File() {
     }
 
-    public File(int id, String name, String filePath) {
+    public File(String name, String filePath) {
         this.name = name;
         this.filePath = filePath;
     }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Table(name = "user_tbl")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,12 +14,13 @@ public class User {
     private String name;
 
     @OneToMany
+    @JoinTable(name = "user_event")
     private List<Event> events;
 
     public User() {
     }
 
-    public User(int id, String name, List<Event> events) {
+    public User(String name, List<Event> events) {
         this.name = name;
         this.events = events;
     }

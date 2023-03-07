@@ -11,8 +11,9 @@ public class AppMain {
 
     public static void main(String[] args) {
         System.out.println("Start...");
-//        flyWayMigrations();
-        HibernateUtil.getSession();
+
+        flyWayMigrations();
+        //HibernateUtil.getSession();
         System.out.println("\nstarting...");
     }
 
