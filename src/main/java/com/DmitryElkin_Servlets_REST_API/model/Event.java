@@ -1,7 +1,6 @@
 package com.DmitryElkin_Servlets_REST_API.model;
 
 import jakarta.persistence.*;
-
 import java.util.Objects;
 
 @Entity
@@ -10,19 +9,23 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id",unique = true,nullable = true)
+
+//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinColumn(name = "user_id", unique = true, nullable = true)
+    @OneToOne
     private User user;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "file_id", unique = true, nullable = true)
     private File file;
 
 
     public Event() {
     }
 
-    public Event(User user) {
+    public Event(User user, File file) {
         this.user = user;
+        this.file = file;
     }
 
     public int getId() {
