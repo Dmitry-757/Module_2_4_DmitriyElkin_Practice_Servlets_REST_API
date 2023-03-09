@@ -13,7 +13,7 @@ public class AppMain {
         System.out.println("Start...");
 
         flyWayMigrations();
-        //HibernateUtil.getSession();
+//        HibernateUtil.getSession();
         System.out.println("\nstarting...");
     }
 

@@ -14,6 +14,9 @@ public class Event {
     @JoinColumn(name = "user_id",unique = true,nullable = true)
     private User user;
 
+    @OneToOne
+    private File file;
+
 
     public Event() {
     }
