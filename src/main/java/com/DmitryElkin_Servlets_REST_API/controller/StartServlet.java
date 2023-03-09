@@ -24,7 +24,7 @@ public class StartServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ServletConfig config = this.getServletConfig();
-        Enumeration e = config.getInitParameterNames();
+        Enumeration<String> e = config.getInitParameterNames();
         while (e.hasMoreElements()){
             String name = (String) e.nextElement();
             String value = (String) config.getInitParameter(name);
