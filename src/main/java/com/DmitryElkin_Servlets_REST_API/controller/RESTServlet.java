@@ -36,7 +36,9 @@ public class RESTServlet extends HttpServlet {
             BufferedReader reader = request.getReader();
             while ((line = reader.readLine()) != null)
                 jb.append(line);
-        } catch (Exception e) { /*report an error*/ }
+        } catch (Exception e) {
+            /*report an error*/
+        }
 
         try {
             File file = objectMapper.readValue(jb.toString(), File.class);
