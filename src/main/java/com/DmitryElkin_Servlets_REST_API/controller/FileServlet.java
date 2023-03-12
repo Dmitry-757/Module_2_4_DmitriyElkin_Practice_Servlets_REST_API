@@ -49,7 +49,7 @@ public class FileServlet extends HttpServlet {
             userId = Integer.parseInt(jsonObject.get("userId").toString());
             user = userRepository.getById(userId);
 
-            if (jsonObject.has("userName")) {
+            if ( (user != null) && (jsonObject.has("userName")) ) {
                 userName = jsonObject.get("userName").toString();
                 if (userName.equals(user.getName())){
                     hasNoError = true;
