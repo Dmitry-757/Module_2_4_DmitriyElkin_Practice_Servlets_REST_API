@@ -61,4 +61,11 @@ public class User {
     public int hashCode() {
         return Objects.hash(id, name, events);
     }
+
+    public void addEvent(Event event){
+        events.add(event);
+    }
+    public void removeEvent(Event event){
+        events.remove(event);
+    }
 }

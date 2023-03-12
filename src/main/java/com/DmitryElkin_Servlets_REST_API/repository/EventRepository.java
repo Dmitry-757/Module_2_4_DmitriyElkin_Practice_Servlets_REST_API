@@ -3,7 +3,7 @@ package com.DmitryElkin_Servlets_REST_API.repository;
 import com.DmitryElkin_Servlets_REST_API.model.Event;
 
 public class EventRepository extends HibernateRepository<Event> {
-    protected EventRepository(Class<Event> typeParameterClass) {
-        super(typeParameterClass);
+    public EventRepository() {
+        super(Event.class);
     }
 }
