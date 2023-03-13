@@ -2,6 +2,7 @@ package com.DmitryElkin_Servlets_REST_API.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,10 +21,16 @@ public class User {
     public User() {
     }
 
+    public User(String name) {
+        this.name = name;
+        this.events = new ArrayList<>();
+    }
+
     public User(String name, List<Event> events) {
         this.name = name;
         this.events = events;
     }
+
 
     public int getId() {
         return id;

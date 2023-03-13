@@ -37,28 +37,47 @@ public class FileServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        boolean hasError = false;
+
         JsonObject jsonObject = JsonParser
                 .parseString(request.getParameter("userInfoJSON"))
                 .getAsJsonObject();
 
-        boolean hasNoError = false;
-        String userName;
-        int userId;
-        User user = null;
-        if (jsonObject.has("userId")) {
-            userId = Integer.parseInt(jsonObject.get("userId").toString());
-            user = userRepository.getById(userId);
+        if (jsonObject.isEmpty()) {
+            hasError = true;
+            System.out.println("userInfo is uncorrected or absent");
+        }
 
-            if ( (user != null) && (jsonObject.has("userName")) ) {
-                userName = jsonObject.get("userName").toString();
-                if (userName.equals(user.getName())){
-                    hasNoError = true;
-                }
+        String userName = "";
+        int userId = 0;
+        User user = null;
+        if ((!hasError) && (jsonObject.has("userId"))) {
+            userId = Integer.parseInt(jsonObject.get("userId").toString());
+        } else {
+            hasError = true;
+            System.out.println("There is no userId!");
+        }
+
+        if ((!hasError) && (jsonObject.has("userName"))) {
+            userName = jsonObject.get("userName").toString();
+        } else {
+            hasError = true;
+            System.out.println("There is no userName!");
+        }
+
+        if ((!hasError) && (userId != 0)) {
+            user = userRepository.getById(userId);
+            if (userName.equals(user.getName())) {
+                hasError = true;
+                System.out.println("The name of user, passed through json, is not equal to name of user found in BD by id!");
             }
+        } else if (!hasError) {
+            user = new User(userName);
+//            userRepository.insert(user);
         }
 
 
-        if ((hasNoError) &&
+        if ((!hasError) &&
                 (request.getContentType() != null && request.getContentType().toLowerCase().contains("multipart/form-data"))
         ) {
 //        String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIRECTORY;
@@ -77,28 +96,27 @@ public class FileServlet extends HttpServlet {
 
                 Event event = new Event(user, file);
                 user.addEvent(event);
-                try{
+                try {
                     fileRepository.insert(file);
                     eventRepository.insert(event);
-                    userRepository.update(user);
-                }catch (Exception e){
+                    if (user.getId() == 0) {
+                        userRepository.insert(user);
+                    } else {
+                        userRepository.update(user);
+                    }
+                } catch (Exception e) {
                     e.printStackTrace();
-                    hasNoError = false;
-                }finally {
-                    if (!hasNoError){
+                    hasError = false;
+                } finally {
+                    if (hasError) {
                         fileRepository.delete(file.getId());
                         eventRepository.delete(event.getId());
                         user.removeEvent(event);
                         userRepository.update(user);
                     }
                 }
-
-
             }
         }
-
-
-
 
 
     }
