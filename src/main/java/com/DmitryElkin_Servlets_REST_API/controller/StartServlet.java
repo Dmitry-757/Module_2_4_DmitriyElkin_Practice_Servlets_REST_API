@@ -1,5 +1,6 @@
 package com.DmitryElkin_Servlets_REST_API.controller;
 
+import com.DmitryElkin_Servlets_REST_API.Service.PrepareDB;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -19,6 +20,7 @@ public class StartServlet extends HttpServlet {
     @Override
     public void init() {
 //        HibernateUtil.getSession();
+        PrepareDB.doPrepare();
     }
 
     @Override
@@ -26,8 +28,8 @@ public class StartServlet extends HttpServlet {
         ServletConfig config = this.getServletConfig();
         Enumeration<String> e = config.getInitParameterNames();
         while (e.hasMoreElements()){
-            String name = (String) e.nextElement();
-            String value = (String) config.getInitParameter(name);
+            String name = e.nextElement();
+            String value = config.getInitParameter(name);
         }
 
         RequestDispatcher view = request.getRequestDispatcher("/templates/start.jsp");

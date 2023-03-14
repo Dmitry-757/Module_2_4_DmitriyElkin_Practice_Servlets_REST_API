@@ -14,6 +14,7 @@ import jakarta.servlet.annotation.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(name = "FileServlet", value = "/FileServlet")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024,
@@ -67,13 +68,23 @@ public class FileServlet extends HttpServlet {
 
         if ((!hasError) && (userId != 0)) {
             user = userRepository.getById(userId);
-            if (userName.equals(user.getName())) {
+
+            if (user == null){
+                System.out.println("The user with got id was not found in BD!");
+                hasError = true;
+            }
+            if ((user != null) && (userName.equals(user.getName()))) {
                 hasError = true;
                 System.out.println("The name of user, passed through json, is not equal to name of user found in BD by id!");
             }
         } else if (!hasError) {
-            user = new User(userName);
-//            userRepository.insert(user);
+            List<User> userList = userRepository.findByName(userName);
+            if (userList.size() == 0) {
+                user = new User(userName);
+                userRepository.insert(user);
+            } else {
+                user = userList.get(0);
+            }
         }
 
 
@@ -89,24 +100,23 @@ public class FileServlet extends HttpServlet {
 
             for (Part part : request.getParts()) {
                 String fileName = part.getSubmittedFileName();
+                if (fileName == null){
+                    break;
+                }
                 part.write(uploadPath + File.separator + fileName);
 
                 com.DmitryElkin_Servlets_REST_API.model.File file =
-                        new com.DmitryElkin_Servlets_REST_API.model.File(fileName, uploadPath + File.separator);
+                        new com.DmitryElkin_Servlets_REST_API.model.File(fileName, uploadPath);
 
                 Event event = new Event(user, file);
                 user.addEvent(event);
                 try {
                     fileRepository.insert(file);
                     eventRepository.insert(event);
-                    if (user.getId() == 0) {
-                        userRepository.insert(user);
-                    } else {
-                        userRepository.update(user);
-                    }
+                    userRepository.update(user);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    hasError = false;
+                    hasError = true;
                 } finally {
                     if (hasError) {
                         fileRepository.delete(file.getId());

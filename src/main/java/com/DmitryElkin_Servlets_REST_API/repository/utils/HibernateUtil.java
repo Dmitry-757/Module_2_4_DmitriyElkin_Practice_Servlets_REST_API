@@ -24,6 +24,7 @@ public class HibernateUtil {
             properties.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/proselyte_module_2_4_db");
             properties.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
             properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+//            properties.setProperty("hibernate.connection.autocommit", "false");
 //            properties.setProperty("hibernate.connection.url", "jdbc:postgresql://localhost:5432/proselyte_developers_hibernate_db");
 //            properties.setProperty("hibernate.connection.driver_class", "org.postgresql.Driver");
 //            properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");

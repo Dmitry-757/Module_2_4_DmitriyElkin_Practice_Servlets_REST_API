@@ -15,7 +15,7 @@ public class Event {
     @OneToOne
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "file_id", unique = true, nullable = true)
     private File file;
 
