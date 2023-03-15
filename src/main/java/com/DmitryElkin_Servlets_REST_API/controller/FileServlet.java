@@ -139,7 +139,7 @@ public class FileServlet extends HttpServlet {
 
         String answer = "All right! ))";
         if (hasError) {
-            answer = "some sheet was happened: "+ errorDescription;
+            answer = "some error was happened: "+ errorDescription;
         }
         String jsonString = (new Gson()).toJson(answer);
 
