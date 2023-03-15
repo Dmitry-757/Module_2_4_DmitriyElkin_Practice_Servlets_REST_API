@@ -24,7 +24,7 @@ public class UserRepository extends HibernateRepository<User>{
         }
     }
 
-    public List<User> findByName(String userName) {
+    public List<User> getByName(String userName) {
         List<User> itemList;
         try (Session session = HibernateUtil.getSession()) {
 //            itemList = session.createQuery("SELECT r FROM User r", typeParameterClass).getResultList();

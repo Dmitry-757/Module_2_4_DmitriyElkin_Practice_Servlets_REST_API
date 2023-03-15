@@ -86,7 +86,7 @@ public class FileServlet extends HttpServlet {
                 System.out.println(errorDescription);
             }
         } else if (!hasError) {
-            List<User> userList = userRepository.findByName(userName);
+            List<User> userList = userRepository.getByName(userName);
             if (userList.size() == 0) {
                 user = new User(userName);
                 userRepository.insert(user);
