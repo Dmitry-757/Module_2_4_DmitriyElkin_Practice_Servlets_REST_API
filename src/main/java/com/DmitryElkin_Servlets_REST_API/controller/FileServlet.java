@@ -6,6 +6,7 @@ import com.DmitryElkin_Servlets_REST_API.repository.EventRepository;
 import com.DmitryElkin_Servlets_REST_API.repository.FileRepository;
 import com.DmitryElkin_Servlets_REST_API.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import jakarta.servlet.*;
@@ -13,8 +14,9 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
+import java.io.IOException;
 
 @WebServlet(name = "FileServlet", value = "/FileServlet")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024,
@@ -39,6 +41,7 @@ public class FileServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         boolean hasError = false;
+        String errorDescription = "";
 
         JsonObject jsonObject = JsonParser
                 .parseString(request.getParameter("userInfoJSON"))
@@ -46,7 +49,8 @@ public class FileServlet extends HttpServlet {
 
         if (jsonObject.isEmpty()) {
             hasError = true;
-            System.out.println("userInfo is uncorrected or absent");
+            errorDescription = "userInfo is uncorrected or absent";
+            System.out.println(errorDescription);
         }
 
         String userName = "";
@@ -56,26 +60,30 @@ public class FileServlet extends HttpServlet {
             userId = Integer.parseInt(jsonObject.get("userId").toString());
         } else {
             hasError = true;
-            System.out.println("There is no userId!");
+            errorDescription = "There is no userId!";
+            System.out.println(errorDescription);
         }
 
         if ((!hasError) && (jsonObject.has("userName"))) {
             userName = jsonObject.get("userName").toString();
         } else {
             hasError = true;
-            System.out.println("There is no userName!");
+            errorDescription = "There is no userName!";
+            System.out.println(errorDescription);
         }
 
         if ((!hasError) && (userId != 0)) {
             user = userRepository.getById(userId);
 
             if (user == null){
-                System.out.println("The user with got id was not found in BD!");
+                errorDescription = "The user with passed id was not found in BD!";
+                System.out.println(errorDescription);
                 hasError = true;
             }
-            if ((user != null) && (userName.equals(user.getName()))) {
+            if ((user != null) && (!userName.equals(user.getName()))) {
                 hasError = true;
-                System.out.println("The name of user, passed through json, is not equal to name of user found in BD by id!");
+                errorDescription = "The name of user, passed through json, is not equal to name of user found in BD by id!";
+                System.out.println(errorDescription);
             }
         } else if (!hasError) {
             List<User> userList = userRepository.findByName(userName);
@@ -117,6 +125,7 @@ public class FileServlet extends HttpServlet {
                 } catch (Exception e) {
                     e.printStackTrace();
                     hasError = true;
+                    errorDescription = e.getMessage();
                 } finally {
                     if (hasError) {
                         fileRepository.delete(file.getId());
@@ -128,6 +137,17 @@ public class FileServlet extends HttpServlet {
             }
         }
 
+        String answer = "All right! ))";
+        if (hasError) {
+            answer = "some sheet was happened: "+ errorDescription;
+        }
+        String jsonString = (new Gson()).toJson(answer);
+
+        PrintWriter out = response.getWriter();
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        out.print(jsonString);
+        out.flush();
 
     }
 }
