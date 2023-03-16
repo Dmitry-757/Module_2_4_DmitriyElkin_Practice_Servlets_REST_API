@@ -1,5 +1,6 @@
 CREATE TABLE `event_tbl` (
                          `id` int NOT NULL AUTO_INCREMENT,
+                         `typeOfEvent` varchar(100) DEFAULT NULL,
                          `file_id` int DEFAULT NULL,
                          `user_id` int DEFAULT NULL,
                          PRIMARY KEY (`id`),

@@ -1,6 +1,7 @@
 package com.DmitryElkin_Servlets_REST_API.controller;
 
 import com.DmitryElkin_Servlets_REST_API.model.Event;
+import com.DmitryElkin_Servlets_REST_API.model.TypeOfEvent;
 import com.DmitryElkin_Servlets_REST_API.model.User;
 import com.DmitryElkin_Servlets_REST_API.repository.EventRepository;
 import com.DmitryElkin_Servlets_REST_API.repository.FileRepository;
@@ -13,27 +14,57 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
-import java.io.File;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.List;
-import java.io.IOException;
 
 @WebServlet(name = "FileServlet", value = "/FileServlet")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024,
         maxFileSize = 1024 * 1024 * 5,
         maxRequestSize = 1024 * 1024 * 5 * 5)
 public class FileServlet extends HttpServlet {
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    //    private final ObjectMapper objectMapper = new ObjectMapper();
     private final UserRepository userRepository = new UserRepository();
     private final FileRepository fileRepository = new FileRepository();
     private final EventRepository eventRepository = new EventRepository();
 
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+//        RequestDispatcher view = request.getRequestDispatcher("/templates/start.jsp");
+//        view.forward(request, response);
+        String uploadPath = "D:" + File.separator + "fileStorage" + File.separator;
 
-        RequestDispatcher view = request.getRequestDispatcher("/templates/start.jsp");
-        view.forward(request, response);
+        String fileName = request.getParameter("fileName");
+        if (fileName == null || fileName.equals("")) {
+            throw new ServletException("File Name can't be null or empty");
+        }
+
+//        File file = new File(request.getServletContext().getAttribute("FILES_DIR")+File.separator+fileName);
+        File file = new File(uploadPath + File.separator + fileName);
+
+        if (!file.exists()) {
+            throw new ServletException("File doesn't exists on server.");
+        }
+        System.out.println("File location on server::" + file.getAbsolutePath());
+        ServletContext ctx = getServletContext();
+
+        String mimeType = ctx.getMimeType(file.getAbsolutePath());
+        response.setContentType(mimeType != null ? mimeType : "application/octet-stream");
+        response.setContentLength((int) file.length());
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+
+        try (InputStream fis = new FileInputStream(file);
+             ServletOutputStream os = response.getOutputStream()) {
+            byte[] bufferData = new byte[1024];
+            int read;
+            while ((read = fis.read(bufferData)) != -1) {
+                os.write(bufferData, 0, read);
+            }
+            os.flush();
+        } catch (Exception e) {
+            throw new ServletException(e.getMessage());
+        }
+        System.out.println("File downloaded at client successfully");
 
     }
 
@@ -75,7 +106,7 @@ public class FileServlet extends HttpServlet {
         if ((!hasError) && (userId != 0)) {
             user = userRepository.getById(userId);
 
-            if (user == null){
+            if (user == null) {
                 errorDescription = "The user with passed id was not found in BD!";
                 System.out.println(errorDescription);
                 hasError = true;
@@ -100,7 +131,7 @@ public class FileServlet extends HttpServlet {
                 (request.getContentType() != null && request.getContentType().toLowerCase().contains("multipart/form-data"))
         ) {
 //        String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIRECTORY;
-            String uploadPath = "D:" + File.separator + "upload" + File.separator;
+            String uploadPath = "D:" + File.separator + "fileStorage" + File.separator;
             File uploadDir = new File(uploadPath);
             if (!uploadDir.exists()) {
                 uploadDir.mkdir();
@@ -108,7 +139,7 @@ public class FileServlet extends HttpServlet {
 
             for (Part part : request.getParts()) {
                 String fileName = part.getSubmittedFileName();
-                if (fileName == null){
+                if (fileName == null) {
                     break;
                 }
                 part.write(uploadPath + File.separator + fileName);
@@ -116,7 +147,7 @@ public class FileServlet extends HttpServlet {
                 com.DmitryElkin_Servlets_REST_API.model.File file =
                         new com.DmitryElkin_Servlets_REST_API.model.File(fileName, uploadPath);
 
-                Event event = new Event(user, file);
+                Event event = new Event(user, file, TypeOfEvent.WRITE);
                 user.addEvent(event);
                 try {
                     fileRepository.insert(file);
@@ -139,7 +170,7 @@ public class FileServlet extends HttpServlet {
 
         String answer = "All right! ))";
         if (hasError) {
-            answer = "some error was happened: "+ errorDescription;
+            answer = "some error was happened: " + errorDescription;
         }
         String jsonString = (new Gson()).toJson(answer);
 

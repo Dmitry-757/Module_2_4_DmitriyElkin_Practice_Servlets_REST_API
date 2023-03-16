@@ -19,13 +19,17 @@ public class Event {
     @JoinColumn(name = "file_id", unique = true, nullable = true)
     private File file;
 
+    @Enumerated(EnumType.STRING)
+    private TypeOfEvent typeOfEvent;
+
 
     public Event() {
     }
 
-    public Event(User user, File file) {
+    public Event(User user, File file, TypeOfEvent typeOfEvent) {
         this.user = user;
         this.file = file;
+        this.typeOfEvent = typeOfEvent;
     }
 
     public int getId() {
