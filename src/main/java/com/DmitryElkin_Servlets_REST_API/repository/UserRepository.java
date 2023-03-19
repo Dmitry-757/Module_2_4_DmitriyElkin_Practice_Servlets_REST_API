@@ -27,7 +27,6 @@ public class UserRepository extends HibernateRepository<User>{
     public List<User> getByName(String userName) {
         List<User> itemList;
         try (Session session = HibernateUtil.getSession()) {
-//            itemList = session.createQuery("SELECT r FROM User r", typeParameterClass).getResultList();
 
             String hql = "select i from User i left join fetch i.events where i.name = :param";
             itemList = session.createQuery(hql, User.class)

@@ -1,13 +1,12 @@
 package com.DmitryElkin_Servlets_REST_API.controller;
 
+import com.DmitryElkin_Servlets_REST_API.Service.PrepareDB;
 import com.DmitryElkin_Servlets_REST_API.model.Event;
 import com.DmitryElkin_Servlets_REST_API.model.TypeOfEvent;
 import com.DmitryElkin_Servlets_REST_API.model.User;
 import com.DmitryElkin_Servlets_REST_API.repository.EventRepository;
 import com.DmitryElkin_Servlets_REST_API.repository.FileRepository;
 import com.DmitryElkin_Servlets_REST_API.repository.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import jakarta.servlet.*;
@@ -27,24 +26,36 @@ public class FileServlet extends HttpServlet {
     private final FileRepository fileRepository = new FileRepository();
     private final EventRepository eventRepository = new EventRepository();
 
+    @Override
+    public void init() {
+//        HibernateUtil.getSession();
+        PrepareDB.doPrepare();
+    }
+
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-//        RequestDispatcher view = request.getRequestDispatcher("/templates/start.jsp");
-//        view.forward(request, response);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        String errorDescription;
         String uploadPath = "D:" + File.separator + "fileStorage" + File.separator;
 
         String fileName = request.getParameter("fileName");
         if (fileName == null || fileName.equals("")) {
-            throw new ServletException("File Name can't be null or empty");
+//            throw new ServletException("File Name can't be null or empty");
+            errorDescription = "File Name can't be null or empty...";
+            showResult(response, true, errorDescription);
+            return;
         }
 
-//        File file = new File(request.getServletContext().getAttribute("FILES_DIR")+File.separator+fileName);
         File file = new File(uploadPath + File.separator + fileName);
 
         if (!file.exists()) {
-            throw new ServletException("File doesn't exists on server.");
+//            throw new ServletException("File doesn't exists on server.");
+            errorDescription = "File doesn't exists on server...";
+            showResult(response, true, errorDescription);
+            return;
         }
+
         System.out.println("File location on server::" + file.getAbsolutePath());
         ServletContext ctx = getServletContext();
 
@@ -72,51 +83,59 @@ public class FileServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         boolean hasError = false;
-        String errorDescription = "";
+        String errorDescription;
 
-        JsonObject jsonObject = JsonParser
-                .parseString(request.getParameter("userInfoJSON"))
-                .getAsJsonObject();
-
-        if (jsonObject.isEmpty()) {
-            hasError = true;
-            errorDescription = "userInfo is uncorrected or absent";
+        JsonObject jsonObject;
+        String param = request.getParameter("userInfoJSON");
+        if (param == null) {
+            errorDescription = "userInfo is uncorrected or absent or http-method is incorrect...";
             System.out.println(errorDescription);
+            showResult(response, true, errorDescription);
+            return;
+        } else {
+            jsonObject = JsonParser
+                    .parseString(param)
+                    .getAsJsonObject();
         }
 
-        String userName = "";
-        int userId = 0;
-        User user = null;
-        if ((!hasError) && (jsonObject.has("userId"))) {
+
+        String userName;
+        int userId;
+        User user;
+        if (jsonObject.has("userId")) {
             userId = Integer.parseInt(jsonObject.get("userId").toString());
         } else {
-            hasError = true;
             errorDescription = "There is no userId!";
             System.out.println(errorDescription);
+            showResult(response, true, errorDescription);
+            return;
         }
 
-        if ((!hasError) && (jsonObject.has("userName"))) {
+        if (jsonObject.has("userName")) {
             userName = jsonObject.get("userName").toString();
         } else {
-            hasError = true;
             errorDescription = "There is no userName!";
             System.out.println(errorDescription);
+            showResult(response, true, errorDescription);
+            return;
         }
 
-        if ((!hasError) && (userId != 0)) {
+        if (userId != 0) {
             user = userRepository.getById(userId);
 
             if (user == null) {
                 errorDescription = "The user with passed id was not found in BD!";
                 System.out.println(errorDescription);
-                hasError = true;
+                showResult(response, true, errorDescription);
+                return;
             }
-            if ((user != null) && (!userName.equals(user.getName()))) {
-                hasError = true;
+            if (!userName.equals(user.getName())) {
                 errorDescription = "The name of user, passed through json, is not equal to name of user found in BD by id!";
                 System.out.println(errorDescription);
+                showResult(response, true, errorDescription);
+                return;
             }
-        } else if (!hasError) {
+        } else {
             List<User> userList = userRepository.getByName(userName);
             if (userList.size() == 0) {
                 user = new User(userName);
@@ -127,10 +146,7 @@ public class FileServlet extends HttpServlet {
         }
 
 
-        if ((!hasError) &&
-                (request.getContentType() != null && request.getContentType().toLowerCase().contains("multipart/form-data"))
-        ) {
-//        String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIRECTORY;
+        if (request.getContentType() != null && request.getContentType().toLowerCase().contains("multipart/form-data") ) {
             String uploadPath = "D:" + File.separator + "fileStorage" + File.separator;
             File uploadDir = new File(uploadPath);
             if (!uploadDir.exists()) {
@@ -153,10 +169,15 @@ public class FileServlet extends HttpServlet {
                     fileRepository.insert(file);
                     eventRepository.insert(event);
                     userRepository.update(user);
+                    showResult(response, false, "");
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     hasError = true;
                     errorDescription = e.getMessage();
+                    showResult(response, true, errorDescription);
+                    return;
+
                 } finally {
                     if (hasError) {
                         fileRepository.delete(file.getId());
@@ -168,17 +189,21 @@ public class FileServlet extends HttpServlet {
             }
         }
 
-        String answer = "All right! ))";
-        if (hasError) {
-            answer = "some error was happened: " + errorDescription;
-        }
-        String jsonString = (new Gson()).toJson(answer);
+    }
+
+    private void showResult(HttpServletResponse response, boolean hasError, String errorDescription) throws IOException {
 
         PrintWriter out = response.getWriter();
+
+        String answer = "All right! ))";
+        if (hasError) {
+            response.setStatus(500);
+            answer = "some error was happened: " + errorDescription;
+        }
+
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        out.print(jsonString);
+        out.print(answer);
         out.flush();
-
     }
 }

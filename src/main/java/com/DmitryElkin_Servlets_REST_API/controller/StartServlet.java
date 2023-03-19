@@ -19,7 +19,6 @@ import java.util.Enumeration;
 public class StartServlet extends HttpServlet {
     @Override
     public void init() {
-//        HibernateUtil.getSession();
         PrepareDB.doPrepare();
     }
 

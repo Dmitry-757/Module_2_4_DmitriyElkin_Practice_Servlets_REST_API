@@ -7,10 +7,16 @@ public class PrepareDB {
     private static final String PASS = "dingo1975";
     private static final String URL = "jdbc:mysql://localhost:3306/proselyte_module_2_4_db";
 
+    private static boolean prepared;
+
     public static void doPrepare() {
         System.out.println("Start...");
 
-        flyWayMigrations();
+        if (!prepared){
+            flyWayClean();
+            flyWayMigrations();
+            prepared = true;
+        }
 //        HibernateUtil.getSession();
         System.out.println("\nstarting...");
     }

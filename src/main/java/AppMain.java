@@ -1,5 +1,4 @@
-import com.DmitryElkin_Servlets_REST_API.repository.utils.HibernateUtil;
-import org.flywaydb.core.Flyway;
+import com.DmitryElkin_Servlets_REST_API.Service.PrepareDB;
 
 public class AppMain {
     private static final String USER = "root";
@@ -9,29 +8,32 @@ public class AppMain {
 
 
 
+
+
     public static void main(String[] args) {
-        System.out.println("Start...");
-
-        flyWayMigrations();
+        PrepareDB.doPrepare();
+//        System.out.println("Start...");
+//
+//        flyWayMigrations();
 //        HibernateUtil.getSession();
-        System.out.println("\nstarting...");
+//        System.out.println("\nstarting...");
     }
 
-    public static void flyWayClean(){
-        var flyWay = Flyway.configure()
-                .cleanDisabled(false)
-                .dataSource(URL, USER, PASS)
-                .locations("classpath:/db/migration")
-                .load();
-        flyWay.clean();
-    }
-
-    public static void flyWayMigrations(){
-//        logger.info("db migration started...");
-        var flyWay = Flyway.configure()
-                .dataSource(URL, USER, PASS)
-                .locations("classpath:/db/migration")
-                .load();
-        flyWay.migrate();
-    }
+//    public static void flyWayClean(){
+//        var flyWay = Flyway.configure()
+//                .cleanDisabled(false)
+//                .dataSource(URL, USER, PASS)
+//                .locations("classpath:/db/migration")
+//                .load();
+//        flyWay.clean();
+//    }
+//
+//    public static void flyWayMigrations(){
+////        logger.info("db migration started...");
+//        var flyWay = Flyway.configure()
+//                .dataSource(URL, USER, PASS)
+//                .locations("classpath:/db/migration")
+//                .load();
+//        flyWay.migrate();
+//    }
 }
