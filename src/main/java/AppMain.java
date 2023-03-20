@@ -1,4 +1,4 @@
-import com.DmitryElkin_Servlets_REST_API.Service.PrepareDB;
+import com.DmitryElkin_Servlets_REST_API.repository.utils.PrepareDB;
 
 public class AppMain {
     private static final String USER = "root";
