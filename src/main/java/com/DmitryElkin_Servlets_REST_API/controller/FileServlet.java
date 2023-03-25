@@ -16,12 +16,11 @@ import jakarta.servlet.annotation.*;
 import java.io.*;
 import java.util.List;
 
-@WebServlet(name = "FileServlet", value = "/FileServlet")
+@WebServlet(name = "FileServlet", value = "/api/v1/files/*")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024,
         maxFileSize = 1024 * 1024 * 5,
         maxRequestSize = 1024 * 1024 * 5 * 5)
 public class FileServlet extends HttpServlet {
-    //    private final ObjectMapper objectMapper = new ObjectMapper();
     private final UserRepository userRepository = new UserRepository();
     private final FileRepository fileRepository = new FileRepository();
     private final EventRepository eventRepository = new EventRepository();

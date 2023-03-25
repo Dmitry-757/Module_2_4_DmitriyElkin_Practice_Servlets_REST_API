@@ -4,15 +4,16 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "event_tbl")
+@Table(name = "events")
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinColumn(name = "user_id", unique = true, nullable = true)
-    @OneToOne
+
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)

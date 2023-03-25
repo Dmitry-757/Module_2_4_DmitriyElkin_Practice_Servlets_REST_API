@@ -13,6 +13,19 @@ public class UserRepository extends HibernateRepository<User>{
     }
 
     @Override
+    public List<User> getAll() {
+        List<User> itemList;
+        try (Session session = HibernateUtil.getSession()) {
+
+            String hql = "select i from User i left join fetch i.events ";
+            itemList = session.createQuery(hql, User.class)
+                    .getResultList();
+
+        }
+        return itemList;
+    }
+
+    @Override
     public User getById(long id) {
         try (Session session = HibernateUtil.getSession()) {
 

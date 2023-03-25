@@ -7,15 +7,14 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "user_tbl")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
 
-    @OneToMany
-    @JoinTable(name = "user_event")
+    @OneToMany(mappedBy = "user")
     private List<Event> events;
 
     public User() {

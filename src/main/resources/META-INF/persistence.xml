@@ -4,6 +4,16 @@
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
     <persistence-unit name="default">
+        <properties>
+
+            <property name="hibernate.connection.username" value="root"/>
+            <property name="hibernate.connection.password" value="dingo1975"/>
+            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/proselyte_module_2_4_db"/>
+            <property name="hibernate.connection.driver_class" value="com.mysql.cj.jdbc.Driver"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+            <property name="hibernate.show_sql" value="true"/>
+<!--            <property name="hibernate.hbm2ddl.auto" value="create"/>-->
+        </properties>
 
     </persistence-unit>
 </persistence>
