@@ -1,6 +1,6 @@
 package com.DmitryElkin_Servlets_REST_API.controller;
 
-import com.DmitryElkin_Servlets_REST_API.Service.PrepareDB;
+import com.DmitryElkin_Servlets_REST_API.repository.utils.PrepareDB;
 import com.DmitryElkin_Servlets_REST_API.model.Event;
 import com.DmitryElkin_Servlets_REST_API.model.TypeOfEvent;
 import com.DmitryElkin_Servlets_REST_API.model.User;

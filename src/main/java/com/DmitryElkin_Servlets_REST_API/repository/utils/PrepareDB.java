@@ -1,4 +1,4 @@
-package com.DmitryElkin_Servlets_REST_API.Service;
+package com.DmitryElkin_Servlets_REST_API.repository.utils;
 
 import org.flywaydb.core.Flyway;
 
