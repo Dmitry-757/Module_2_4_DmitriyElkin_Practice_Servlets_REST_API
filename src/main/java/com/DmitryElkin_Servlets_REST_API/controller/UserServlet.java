@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Objects;
 
 @WebServlet(name = "UserServlet", value = "/api/v1/users/*")
 //@MultipartConfig
@@ -22,12 +23,16 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<User> usersList = userRepository.getAll();
 
-        final String jsonItem = objectMapper.writeValueAsString(usersList);
-        response.setContentType("application/json; charset=UTF-8");
-        PrintWriter writer = response.getWriter();
-        writer.write(jsonItem);
+        String match = request.getHttpServletMapping().getMatchValue();
+        if (Objects.equals(match, "")) {
+            List<User> usersList = userRepository.getAll();
+
+            final String jsonItem = objectMapper.writeValueAsString(usersList);
+            response.setContentType("application/json; charset=UTF-8");
+            PrintWriter writer = response.getWriter();
+            writer.write(jsonItem);
+        }
     }
 
     @Override
