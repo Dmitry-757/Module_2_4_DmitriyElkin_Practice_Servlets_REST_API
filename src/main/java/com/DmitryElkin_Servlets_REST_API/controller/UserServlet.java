@@ -5,15 +5,15 @@ import com.DmitryElkin_Servlets_REST_API.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @WebServlet(name = "UserServlet", value = "/api/v1/users/*")
 //@MultipartConfig
@@ -22,21 +22,39 @@ public class UserServlet extends HttpServlet {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+        Object obj = null;
         String match = request.getHttpServletMapping().getMatchValue();
         if (Objects.equals(match, "")) {
-            List<User> usersList = userRepository.getAll();
+            obj = userRepository.getAll();
 
-            final String jsonItem = objectMapper.writeValueAsString(usersList);
-            response.setContentType("application/json; charset=UTF-8");
-            PrintWriter writer = response.getWriter();
-            writer.write(jsonItem);
+//            final String jsonItem = objectMapper.writeValueAsString(usersList);
+//            response.setContentType("application/json; charset=UTF-8");
+//            PrintWriter writer = response.getWriter();
+//            writer.write(jsonItem);
+        } else {
+            Pattern pattern = Pattern.compile("\\d+");
+            Matcher matcher = pattern.matcher(match);
+            int start;
+            int end;
+            int id;
+            if(matcher.find()) {
+                start=matcher.start();
+                end=matcher.end();
+                id = Integer.parseInt(match.substring(start,end));
+                obj = userRepository.getById(id);
+            }
         }
+
+        final String jsonItem = objectMapper.writeValueAsString(obj);
+        response.setContentType("application/json; charset=UTF-8");
+        PrintWriter writer = response.getWriter();
+        writer.write(jsonItem);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 //        JsonObject jsonObject;
 //        String param = request.getParameter("userInfoJSON");
 //        jsonObject = JsonParser
@@ -44,8 +62,8 @@ public class UserServlet extends HttpServlet {
 //                    .getAsJsonObject();
 //        int userId = Integer.parseInt(jsonObject.get("userId").toString());
 
-        StringBuffer jb = new StringBuffer();
-        String line = null;
+        StringBuilder jb = new StringBuilder();
+        String line;
         try {
             BufferedReader reader = request.getReader();
             while ((line = reader.readLine()) != null)
