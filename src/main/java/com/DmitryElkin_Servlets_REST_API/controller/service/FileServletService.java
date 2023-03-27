@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 
 import java.io.*;
+import java.util.Enumeration;
 import java.util.List;
 
 //*** !!! обязательно спросить про static и многопоточность !!!
@@ -81,10 +82,15 @@ public class FileServletService {
         out.flush();
     }
 
-public static void uploadFile(HttpServletRequest request, HttpServletResponse response)
+    public static void uploadFile(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         boolean hasError = false;
         String errorDescription;
+
+        Enumeration paramaterNames = request.getParameterNames();
+        while (paramaterNames.hasMoreElements()) {
+            System.out.println(paramaterNames.nextElement());
+        }
 
         JsonObject jsonObject;
         String param = request.getParameter("userInfoJSON");
@@ -147,7 +153,7 @@ public static void uploadFile(HttpServletRequest request, HttpServletResponse re
         }
 
 
-        if (request.getContentType() != null && request.getContentType().toLowerCase().contains("multipart/form-data") ) {
+        if (request.getContentType() != null && request.getContentType().toLowerCase().contains("multipart/form-data")) {
             String uploadPath = "D:" + File.separator + "fileStorage" + File.separator;
             File uploadDir = new File(uploadPath);
             if (!uploadDir.exists()) {

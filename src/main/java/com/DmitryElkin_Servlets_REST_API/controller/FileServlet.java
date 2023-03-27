@@ -9,9 +9,9 @@ import jakarta.servlet.annotation.*;
 import java.io.*;
 
 @WebServlet(name = "FileServlet", value = "/api/v1/files/*")
-@MultipartConfig(fileSizeThreshold = 1024 * 1024,
-        maxFileSize = 1024 * 1024 * 5,
-        maxRequestSize = 1024 * 1024 * 5 * 5)
+//@MultipartConfig(fileSizeThreshold = 1024 * 1024,
+//        maxFileSize = 1024 * 1024 * 5,
+//        maxRequestSize = 1024 * 1024 * 5 * 5)
 public class FileServlet extends HttpServlet {
 
     @Override

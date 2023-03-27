@@ -14,7 +14,11 @@
 <br>
 <a href="${pageContext.request.contextPath}/RESTServlet">RESTServlet</a>
 
-
+<form action="/fs/api/v1/files" method="post" enctype="multipart/form-data">
+    Select File to Upload:<input type="file" name="fileName">
+    <br>
+    <input type="submit" value="Upload">
+</form>
 
 
 </body>
