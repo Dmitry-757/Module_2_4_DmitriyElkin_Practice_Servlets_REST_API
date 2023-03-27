@@ -2,6 +2,7 @@ package com.DmitryElkin_Servlets_REST_API.repository;
 
 import com.DmitryElkin_Servlets_REST_API.model.User;
 import com.DmitryElkin_Servlets_REST_API.repository.utils.HibernateUtil;
+import jakarta.persistence.NoResultException;
 import org.hibernate.Session;
 
 
@@ -29,11 +30,17 @@ public class UserRepository extends HibernateRepository<User>{
     public User getById(long id) {
         try (Session session = HibernateUtil.getSession()) {
 
+            User user = null;
             String hql = "select i from User i left join fetch i.events where i.id = :id";
-            return session.createQuery(hql, User.class)
-                    .setParameter("id", id)
-                    .getSingleResult();
-
+            try {
+                user = session.createQuery(hql, User.class)
+                        .setParameter("id", id)
+                        .getSingleResult();
+            }
+            catch (NoResultException e){
+                System.out.println("no user with such id in DB!");
+            }
+            return user;
         }
     }
 

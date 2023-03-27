@@ -17,7 +17,7 @@ public class HibernateUtil {
 
     static {
         try {
-//            Properties properties= new Properties();
+//            Properties properties = new Properties();
 //            properties.setProperty("hibernate.connection.username", "root");
 //            properties.setProperty("hibernate.connection.password", "dingo1975");
 //            properties.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/proselyte_module_2_4_db");
