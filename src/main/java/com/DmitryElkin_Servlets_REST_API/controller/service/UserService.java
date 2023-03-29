@@ -50,17 +50,8 @@ public class UserService {
         }
     }
 
-    public static void doPost(HttpServletRequest request, HttpServletResponse response) {
-
-        StringBuilder jb = new StringBuilder();
-        String line;
-        try (BufferedReader reader = request.getReader()) {
-            while ((line = reader.readLine()) != null)
-                jb.append(line);
-        } catch (Exception e) { /*report an error*/ }
-
-        JsonObject jsonObject = JsonParser.parseString(jb.toString()).getAsJsonObject();
-
+    public static void doPost(HttpServletRequest request) {
+        JsonObject jsonObject = getJSON(request);
 
         String userName = jsonObject.get("userName").toString();
         int userId = Integer.parseInt(jsonObject.get("userId").toString());
@@ -72,16 +63,7 @@ public class UserService {
     }
 
     public static void doPut(HttpServletRequest request) {
-
-        StringBuilder jb = new StringBuilder();
-        String line;
-        try (BufferedReader reader = request.getReader()) {
-            while ((line = reader.readLine()) != null)
-                jb.append(line);
-        } catch (Exception e) { /*report an error*/ }
-
-        JsonObject jsonObject = JsonParser.parseString(jb.toString()).getAsJsonObject();
-
+        JsonObject jsonObject = getJSON(request);
         String userName = jsonObject.get("userName").toString();
         int userId = Integer.parseInt(jsonObject.get("userId").toString());
         User user;
@@ -89,8 +71,35 @@ public class UserService {
             user = new User(userName);
             userRepository.update(user);
         }
-
     }
 
+//    public static void doDelete(HttpServletRequest request) {
+//
+//        StringBuilder jb = new StringBuilder();
+//        String line;
+//        try (BufferedReader reader = request.getReader()) {
+//            while ((line = reader.readLine()) != null)
+//                jb.append(line);
+//        } catch (Exception e) { /*report an error*/ }
+//
+//        JsonObject jsonObject = JsonParser.parseString(jb.toString()).getAsJsonObject();
+//
+//        int userId = Integer.parseInt(jsonObject.get("userId").toString());
+//        if (userId != 0) {
+//            userRepository.delete(userId);
+//        }
+//
+//    }
+
+    private static JsonObject getJSON(HttpServletRequest request){
+        StringBuilder jb = new StringBuilder();
+        String line;
+        try (BufferedReader reader = request.getReader()) {
+            while ((line = reader.readLine()) != null)
+                jb.append(line);
+        } catch (Exception e) { /*report an error*/ }
+
+        return JsonParser.parseString(jb.toString()).getAsJsonObject();
+    }
 
 }

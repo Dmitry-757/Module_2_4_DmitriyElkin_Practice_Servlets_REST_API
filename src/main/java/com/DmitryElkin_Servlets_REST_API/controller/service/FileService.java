@@ -87,7 +87,7 @@ public class FileService {
         boolean hasError = false;
         String errorDescription;
 
-        Enumeration paramaterNames = request.getParameterNames();
+        Enumeration<String> paramaterNames = request.getParameterNames();
         while (paramaterNames.hasMoreElements()) {
             System.out.println(paramaterNames.nextElement());
         }

@@ -27,7 +27,7 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 
-        UserService.doPost(request, response);
+        UserService.doPost(request);
 
     }
 
@@ -37,5 +37,12 @@ public class UserServlet extends HttpServlet {
         UserService.doPut(request);
 
     }
+
+//    @Override
+//    protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
+//
+//        UserService.doDelete(request);
+//
+//    }
 
 }
