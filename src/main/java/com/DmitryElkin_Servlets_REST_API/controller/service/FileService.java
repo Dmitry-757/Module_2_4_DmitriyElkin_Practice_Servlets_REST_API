@@ -21,7 +21,7 @@ import java.util.List;
 
 //*** !!! обязательно спросить про static и многопоточность !!!
 //*** Что будет при использовании статических переменных в многопоточке?
-public class FileServletService {
+public class FileService {
     private static final UserRepository userRepository = new UserRepository();
     private static final FileRepository fileRepository = new FileRepository();
     private static final EventRepository eventRepository = new EventRepository();
