@@ -1,4 +1,4 @@
-package com.DmitryElkin_Servlets_REST_API.controller.service;
+package com.DmitryElkin_Servlets_REST_API.service;
 
 import com.DmitryElkin_Servlets_REST_API.model.User;
 import com.DmitryElkin_Servlets_REST_API.repository.UserRepository;
@@ -17,10 +17,10 @@ import java.util.regex.Pattern;
 
 public class UserService {
 
-    private static final UserRepository userRepository = new UserRepository();
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private final UserRepository userRepository = new UserRepository();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Object obj = null;
         String match = request.getHttpServletMapping().getMatchValue();
         if (Objects.equals(match, "")) {
@@ -50,7 +50,7 @@ public class UserService {
         }
     }
 
-    public static void doPost(HttpServletRequest request) {
+    public void doPost(HttpServletRequest request) {
         JsonObject jsonObject = getJSON(request);
 
         String userName = jsonObject.get("userName").toString();
@@ -62,7 +62,7 @@ public class UserService {
         }
     }
 
-    public static void doPut(HttpServletRequest request) {
+    public void doPut(HttpServletRequest request) {
         JsonObject jsonObject = getJSON(request);
         String userName = jsonObject.get("userName").toString();
         int userId = Integer.parseInt(jsonObject.get("userId").toString());
@@ -73,7 +73,7 @@ public class UserService {
         }
     }
 
-//    public static void doDelete(HttpServletRequest request) {
+//    public void doDelete(HttpServletRequest request) {
 //
 //        StringBuilder jb = new StringBuilder();
 //        String line;
@@ -91,7 +91,7 @@ public class UserService {
 //
 //    }
 
-    private static JsonObject getJSON(HttpServletRequest request){
+    private JsonObject getJSON(HttpServletRequest request){
         StringBuilder jb = new StringBuilder();
         String line;
         try (BufferedReader reader = request.getReader()) {

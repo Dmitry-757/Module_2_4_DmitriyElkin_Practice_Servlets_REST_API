@@ -1,4 +1,4 @@
-package com.DmitryElkin_Servlets_REST_API.controller.service;
+package com.DmitryElkin_Servlets_REST_API.service;
 
 import com.DmitryElkin_Servlets_REST_API.model.Event;
 import com.DmitryElkin_Servlets_REST_API.model.TypeOfEvent;
@@ -21,13 +21,15 @@ import java.util.List;
 
 //*** !!! обязательно спросить про static и многопоточность !!!
 //*** Что будет при использовании статических переменных в многопоточке?
-public class FileService {
-    private static final UserRepository userRepository = new UserRepository();
-    private static final FileRepository fileRepository = new FileRepository();
-    private static final EventRepository eventRepository = new EventRepository();
-    private static final String FILE_STORAGE_PATH = "D:" + File.separator + "fileStorage" + File.separator;
 
-    public static void downloadFile(ServletContext ctx, HttpServletRequest request, HttpServletResponse response)
+//для других сущностей использовать не репозитории а сервисы!
+public class FileService {
+    private static final String FILE_STORAGE_PATH = "D:" + File.separator + "fileStorage" + File.separator;
+    private final UserRepository userRepository = new UserRepository();
+    private final FileRepository fileRepository = new FileRepository();
+    private final EventRepository eventRepository = new EventRepository();
+
+    public void downloadFile(ServletContext ctx, HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         String errorDescription;
         String uploadPath = FILE_STORAGE_PATH;
@@ -66,7 +68,7 @@ public class FileService {
         showResult(response, false, "");
     }
 
-    private static void showResult(HttpServletResponse response, boolean hasError, String errorDescription) throws IOException {
+    private void showResult(HttpServletResponse response, boolean hasError, String errorDescription) throws IOException {
 
         PrintWriter out = response.getWriter();
 
@@ -82,7 +84,7 @@ public class FileService {
         out.flush();
     }
 
-    public static void uploadFile(HttpServletRequest request, HttpServletResponse response)
+    public void uploadFile(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         boolean hasError = false;
         String errorDescription;
