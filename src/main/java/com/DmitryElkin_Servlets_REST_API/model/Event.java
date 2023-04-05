@@ -17,7 +17,7 @@ public class Event {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    @JoinColumn(name = "file_id", unique = true, nullable = true)
+    @JoinColumn(name = "file_id", unique = true)
     private File file;
 
     @Enumerated(EnumType.STRING)

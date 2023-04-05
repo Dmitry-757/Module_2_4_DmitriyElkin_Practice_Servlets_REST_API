@@ -1,7 +1,9 @@
 package com.DmitryElkin_Servlets_REST_API.service;
 
 
+import com.DmitryElkin_Servlets_REST_API.model.User;
 import com.DmitryElkin_Servlets_REST_API.repository.EventRepository;
+import com.DmitryElkin_Servlets_REST_API.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,6 +15,7 @@ import java.util.regex.Pattern;
 
 public class EventService {
     private final EventRepository eventRepository = new EventRepository();
+    private final UserRepository userRepository = new UserRepository();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -32,7 +35,8 @@ public class EventService {
                 end = matcher.end();
                 id = Integer.parseInt(match.substring(start, end));
                 if (id !=0 ) {
-                    obj = eventRepository.getById(id);
+                    User user = userRepository.getById(id);
+                    obj = eventRepository.getByUser(user);
                 }
             }
         }

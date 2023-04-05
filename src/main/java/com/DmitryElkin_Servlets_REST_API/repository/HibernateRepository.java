@@ -81,7 +81,6 @@ public abstract class HibernateRepository<T> {
         try (Session session = HibernateUtil.getSession()) {
             HibernateCriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<T> criteriaQuery = builder.createQuery(typeParameterClass);
-//        Root<T> root = criteriaQuery.from(typeParameterClass);
             Query<T> query = session.createQuery(criteriaQuery);
             itemList = query.getResultList();
         }
